@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { Button, View, Text } from 'react-native';
+import Restaurants from '../Restaurants/Restaurants';
+import GasStations from '../GasStations/GasStations';
 
 const MainScreen = ({navigation}) => {
   return (
@@ -9,6 +11,8 @@ const MainScreen = ({navigation}) => {
         title="Go to Search"
         onPress={() => navigation.navigate('Search')}
       />
+      <Restaurants/>
+      <GasStations/>
     </View>
   );
 }

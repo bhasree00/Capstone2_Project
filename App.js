@@ -44,7 +44,12 @@ export default function App() {
       {/* <script async
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCT27zST6QhzHxiNFjSmC_vcfwjfIJdnjc&libraries=places&callback=initMap">
       </script> */}
-      <Stack.Navigator initialRouteName="Main">
+      <Stack.Navigator
+        initialRouteName="Main"
+        screenOptions={{
+          headerShown: false
+        }}
+      >
         <Stack.Screen name="Main" component={MainScreen} />
         <Stack.Screen name="Search" component={SearchScreen} />
       </Stack.Navigator>

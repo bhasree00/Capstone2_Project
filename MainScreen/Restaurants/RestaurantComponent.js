@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Button, View, StyleSheet } from 'react-native';
 
-const RestaurantComponent = ({navigation}) => {
+const RestaurantComponent = (props) => {
   // const [latitude, onChangeLatitude] = React.useState(37.9485);
   // const [longitude, onChangeLongitude] = React.useState(-91.7715);
 

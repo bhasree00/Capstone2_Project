@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, View, Text, StyleSheet } from 'react-native';
+import { ActivityIndicator, Button, View, Text, FlatList } from 'react-native';
 import RestaurantComponent from './RestaurantComponent';
 import styles from '../style';
 
@@ -7,10 +7,34 @@ const Restaurants = ({navigation}) => {
   const [latitude, onChangeLatitude] = React.useState(37.9485);
   const [longitude, onChangeLongitude] = React.useState(-91.7715);
 
+  const [isLoading, setLoading] = React.useState(true);
+  const [fetchHasRun, setFetchHasRun] = React.useState(false);
+  const [restaurantState, setRestaurantState] = React.useState([]);
+
+  let restaurantList = [];
+  let restaurantComponents = [];
+
+  // for (let i = 0; i < 6; i++) {
+  //   console.log('pushing retaurant component');
+  //   // restaurantComponents.push(<RestaurantComponent restaurant={restaurantList[i]}/>);
+  //   restaurantComponents.push(<RestaurantComponent key={i}/>);
+  // }
+
   const API_KEY = '9OEKF3EUekl4qDOM8AVGCmoTPtlo57KL' // tom tom
   const LIMIT = 20 // number of total responses
   const RADIUS = 1000 // search radius (in meters)
   const RESTAURANTS = 7315 // category code found in example: https://developer.tomtom.com/search-api/documentation/search-service/category-search
+
+  class RestaurantData {
+    constructor(address, distance, name, rating, price, photoUrl) {
+      this.address = address;
+      this.distance = distance;
+      this.name = name;
+      this.rating = rating;
+      this.price = price;
+      this.photoUrl = photoUrl;
+    }
+  }
 
   const fetchRestaurants = () => {
     // This element will hold all photos
@@ -42,11 +66,18 @@ const Restaurants = ({navigation}) => {
           // console.log('Address -> ', address);
 
           // This will display the distance by converting meters to miles
+          let distance = data.results[i].dist * 0.000621;
           // console.log('Distance: ', data.results[i].dist * 0.000621);
 
           // we will only look for more details if this poi has more details
           if (data.results[i].hasOwnProperty('dataSources')) {
+            let name = ""
+            let rating = null;
+            let price = null;
+            let photoUrl = "";
+
             // console.log('Name =', data.results[i].poi.name);
+            name = data.results[i].poi.name;
 
             // this will return address only if whole address is there
             if (data.results[i].address.hasOwnProperty('streetNumber') && data.results[i].address.hasOwnProperty('streetName') && data.results[i].address.hasOwnProperty('municipality')) {
@@ -62,16 +93,19 @@ const Restaurants = ({navigation}) => {
 
               if (details.result.hasOwnProperty('rating')) {
                 // console.log('Rate (max is 10) =', details.result.rating.value);
+                rating = details.result.rating.value;
               }
 
               if (details.result.hasOwnProperty('priceRange')) {
                 // console.log('Price (max is 4) =', details.result.priceRange.value);
+                price = details.result.priceRange.value;
               }
 
               // next we will grab the first photo for each business (if they have a photo)
               if (details.result.hasOwnProperty('photos')) {
-                const photo = document.createElement("img");
-                photo.src = `https://api.tomtom.com/search/2/poiPhoto?key=${API_KEY}&id=${details.result.photos[0].id}&width=100&height=100`;
+                // const photo = document.createElement("img");
+                photoUrl = `https://api.tomtom.com/search/2/poiPhoto?key=${API_KEY}&id=${details.result.photos[0].id}&width=100&height=100`;
+                // photo.src = photoUrl;
                 //container.append(photo);
 
                 // fetch(`https://api.tomtom.com/search/2/poiPhoto?key=${API_KEY}&id=${details.result.photos[0].id}&width=100&height=100`)
@@ -80,9 +114,36 @@ const Restaurants = ({navigation}) => {
                 //   })
               }
             });
+
+            // Make a new restaurant object with this info
+            console.log('creating new restaurant');
+            const restaurant = new RestaurantData(address, distance, name, rating, price, photoUrl);
+
+            // append this restaurant to list of restaurants
+            restaurantList.push(restaurant);
           }
         }
+        console.log(restaurantList);
+        // create a list of restaurant components to be rendered
+        for (let i = 0; i < restaurantList.length; i++) {
+          console.log('pushing retaurant component: ', restaurantList[i]);
+          restaurantComponents.push(<RestaurantComponent key={i} restaurant={restaurantList[i]}/>);
+          // restaurantComponents.push(<Text style={{ flex: 1 }}>Hello...</Text>);
+        }
+        setRestaurantState(restaurantComponents);
+    
+        // stop loading
+        console.log('done loading');
+        setLoading(false);
     });
+  }
+
+  // This may be overkill but I want to make sure fetchRestaurants only gets called once
+  // so we aren't using too many api calls
+  if (!fetchHasRun) {
+    console.log('fetching restaurant data!');
+    fetchRestaurants();
+    setFetchHasRun(true);
   }
 
   return (
@@ -93,18 +154,15 @@ const Restaurants = ({navigation}) => {
       />
       <div id="restaurantPhotoContainer"></div> */}
       <Text style={styles.sectionHeader}>Explore Restaurants</Text>
-      <RestaurantComponent/>
+      <View style={styles.dataRowContainer}>
+        {isLoading ? <ActivityIndicator style={{ flex: 1 }}/> : (
+          <View style={styles.dataRowContainer}>
+            {restaurantState}
+          </View>
+        )}
+      </View>
     </View>
   );
 }
-
-// const styles = StyleSheet.create({
-//   sectionWrapper: {
-//     flex: 1,
-//     minHeight: 'fit-content',
-//     marginTop: '1rem',
-//     marginBottom: '1rem'
-//   }
-// });
 
 export default Restaurants;

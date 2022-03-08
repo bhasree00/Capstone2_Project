@@ -8,10 +8,20 @@ const styles =  StyleSheet.create({
     marginBottom: '1rem'
   },
   sectionHeader: {
-    marginBottom: '1rem'
+    marginBottom: '0.5rem'
+  },
+  // this is used for all restaurants, gas stations, and your trip components
+  dataRowContainer: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'row',
+    // minWidth: 'fit-content',
+    overflow: 'scroll',
+    gap: '0.5rem'
   },
   backgroundImage: {
-    width: '100%',
+    // width: '100%',
+    resizeMode: 'cover',
     flex: 2,
     display: 'flex',
     justifyContent: 'flex-end'

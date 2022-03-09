@@ -6,14 +6,6 @@ import YourTrips from './YourTrips/YourTrips';
 import styles from './style';
 
 const MainScreen = ({navigation}) => {
-
-  // const getHeaderHeight = () => {
-  //   const header = document.getElementById('header');
-  //   const headerHeight = header.offsetHeight;
-  //   console.log(headerHeight);
-  //   document.getElementById('searchWrapper').style.top = headerHeight + "px";
-  // }
-
   return (
     <View style={{ flex: 1 }}>
       <ImageBackground

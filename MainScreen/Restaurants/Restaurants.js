@@ -14,12 +14,6 @@ const Restaurants = ({navigation}) => {
   let restaurantList = [];
   let restaurantComponents = [];
 
-  // for (let i = 0; i < 6; i++) {
-  //   console.log('pushing retaurant component');
-  //   // restaurantComponents.push(<RestaurantComponent restaurant={restaurantList[i]}/>);
-  //   restaurantComponents.push(<RestaurantComponent key={i}/>);
-  // }
-
   const API_KEY = '9OEKF3EUekl4qDOM8AVGCmoTPtlo57KL' // tom tom
   const LIMIT = 20 // number of total responses
   const RADIUS = 1000 // search radius (in meters)

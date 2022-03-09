@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, View, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 const GasComponent = ({navigation}) => {
   return (

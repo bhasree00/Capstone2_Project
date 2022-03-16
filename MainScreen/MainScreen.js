@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Pressable, View, Text, StyleSheet, ImageBackground, TouchableOpacity } from 'react-native';
+import { Pressable, View, Text, StyleSheet, ImageBackground, Image } from 'react-native';
 import Restaurants from './Restaurants/Restaurants';
 import GasStations from './GasStations/GasStations';
 import YourTrips from './YourTrips/YourTrips';
@@ -27,7 +27,11 @@ const MainScreen = ({navigation}) => {
           onPress={() => navigation.navigate('Search')}
           style={styles.searchBar}
         >
-          <Text>Search Bar</Text>
+          <Image
+            style={styles.searchIcon}
+            source={require('./images/search-svgrepo-com.svg')}
+          />
+          <Text style={styles.searchBarText}>Where do you want to go?</Text>
         </Pressable>
       </View>
       <YourTrips style={{ flex: 4 }}/>

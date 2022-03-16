@@ -8,7 +8,10 @@ const styles =  StyleSheet.create({
     marginBottom: '1rem'
   },
   sectionHeader: {
-    marginBottom: '0.5rem'
+    marginBottom: '0.5rem',
+    fontSize: '1rem',
+    fontWeight: '700',
+    marginLeft: '5vw'
   },
   // this is used for all restaurants, gas stations, and your trip components
   dataRowContainer: {
@@ -32,8 +35,9 @@ const styles =  StyleSheet.create({
     paddingBottom: '1.5rem'
   },
   headerTitle: {
-    fontSize: '2rem',
+    fontSize: '1.75rem',
     color: 'white',
+    fontWeight: '500'
   },
   headerSubTitle: {
     fontSize: '0.75rem',
@@ -51,7 +55,9 @@ const styles =  StyleSheet.create({
     backgroundColor: 'white',
     height: '2.5rem',
     display: 'flex',
-    justifyContent: 'center',
+    flexDirection:'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
     borderRadius: 10,
     padding: '1rem',
     shadowOffset: {
@@ -62,7 +68,13 @@ const styles =  StyleSheet.create({
     shadowOpacity: 0.15
   },
   searchBarText: {
-    fontSize: '1rem'
+    fontSize: '1rem',
+    color: 'gray'
+  },
+  searchIcon: {
+    width: '1rem',
+    height: '1rem',
+    marginRight: '0.75rem'
   }
 });
 

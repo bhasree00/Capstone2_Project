@@ -1,10 +1,14 @@
 import * as React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Pressable } from 'react-native';
 
 const SearchScreen = ({navigation}) => {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Search Screen</Text>
+      <Pressable
+        onPress={() => navigation.navigate('Main')}
+      >
+        <Text>Main Screen</Text>
+      </Pressable>
     </View>
   );
 }

@@ -91,7 +91,12 @@ const GasStations = ({navigation}) => {
       />
       <div id="gasPhotoContainer"></div> */}
       <Text style={styles.sectionHeader}>Fill up on Fuel</Text>
-      <GasComponent/>
+      <View style={styles.dataRowContainer}>
+        <View style={styles.dataRowContainer}>
+          <View style={styles.dataRowOffset}/>
+          <GasComponent/>
+        </View>
+      </View>
     </View>
   );
 }

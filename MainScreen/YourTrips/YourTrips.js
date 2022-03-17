@@ -7,7 +7,12 @@ const YourTrips = ({navigation}) => {
   return (
     <View style={styles.sectionWrapper}>
       <Text style={styles.sectionHeader}>Your Trips</Text>
-      <TripComponent/>
+      <View style={styles.dataRowContainer}>
+        <View style={styles.dataRowContainer}>
+          <View style={styles.dataRowOffset}/>
+          <TripComponent/>
+        </View>
+      </View>
     </View>
   );
 }

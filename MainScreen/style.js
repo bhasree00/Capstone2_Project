@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { clearCache } from 'react-native-extended-stylesheet';
 
 const styles =  StyleSheet.create({
   sectionWrapper: {
@@ -18,9 +19,13 @@ const styles =  StyleSheet.create({
     flex: 1,
     display: 'flex',
     flexDirection: 'row',
-    // minWidth: 'fit-content',
     overflow: 'scroll',
     gap: '0.5rem'
+  },
+  dataRowOffset: {
+    width: 'calc(5vw - 0.5rem)',
+    padding: 0,
+    margin: 0
   },
   backgroundImage: {
     // width: '100%',

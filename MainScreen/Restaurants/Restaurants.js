@@ -151,6 +151,7 @@ const Restaurants = ({navigation}) => {
       <View style={styles.dataRowContainer}>
         {isLoading ? <ActivityIndicator style={{ flex: 1 }}/> : (
           <View style={styles.dataRowContainer}>
+            <View style={styles.dataRowOffset}/>
             {restaurantState}
           </View>
         )}

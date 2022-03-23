@@ -25,18 +25,22 @@ const styles = StyleSheet.create({
 
 const SearchScreen = ({navigation}) => {
   const mapbox_token = 'pk.eyJ1Ijoibmlja2Z1bGxlciIsImEiOiJjbDBzY2ZtdW8wMDRrM2xuM3dwbXozdzNjIn0.hSoWZ6hIKLCOSpLfO0lrPw';
+  let lat;
+  let lon;
+
   const [latitude, onChangeLatitude] = React.useState(37.9485);
   const [longitude, onChangeLongitude] = React.useState(-91.7715);
+
   const coords = React.useRef();
   const updateCoords = React.useCallback(() => {
     // coords.current.flyTo([longitude, latitude], 10000);
     // coords.current.zoomTo(8, 100);
     coords.current.setCamera({
-      centerCoordinate: [longitude, latitude],
-      zoomLevel: 8,
-      animationDuration: 5000, 
+      centerCoordinate: [lon, lat],
+      zoomLevel: 10,
+      animationDuration: 3000, 
     });
-  })
+  });
   
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -55,12 +59,8 @@ const SearchScreen = ({navigation}) => {
           placeholder: "Where do you want to go?",
         }}
         onPress={(item) => {
-          // console.log(item.position.lat);
-          // console.log(item.position.lon);
-          onChangeLatitude(item.position.lat);
-          onChangeLongitude(item.position.lon);
-          // console.log(latitude);
-          // console.log(longitude);
+          lat = item.position.lat;
+          lon = item.position.lon;
           updateCoords();
         }}
         inputContainerStyle={{
@@ -92,7 +92,8 @@ const SearchScreen = ({navigation}) => {
         >
           <MapboxGL.Camera
             ref={coords}
-            centerCoordinate={[longitude,latitude]}
+            // centerCoordinate={[longitude,latitude]}
+            // zoomLevel={2}
           />
         </MapboxGL.MapView>
       </View>

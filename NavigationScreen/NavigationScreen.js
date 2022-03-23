@@ -2,7 +2,9 @@ import * as React from 'react';
 import { StyleSheet, View, Alert } from 'react-native';
 import MapboxNavigation from '@homee/react-native-mapbox-navigation';
 
-const NavigationScreen = ({navigation}) => {
+const NavigationScreen = ({ route, navigation }) => {
+  const { destLat, destLon } = route.params;
+
   const handleEndNavigation = () => {
     console.log('End pressed');
     navigation.navigate('Search');
@@ -11,8 +13,9 @@ const NavigationScreen = ({navigation}) => {
   return (
     <View style={styles.container}>
       <MapboxNavigation
-        origin={[-97.760288, 30.273566]}
-        destination={[-97.918842, 30.494466]}
+        origin={[-91.7715, 37.9485]}
+        // origin={[originLon, originLat]}
+        destination={[destLon, destLat]}
         shouldSimulateRoute // this is demoing someone driving
         hideStatusView // also just used for demo
         showsEndOfRouteFeedback

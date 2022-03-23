@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet, Alert } from 'react-native';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import AutoCompleteInput from "react-native-tomtom-autocomplete";
+import GetLocation from 'react-native-get-location'
 
 MapboxGL.setAccessToken('pk.eyJ1Ijoibmlja2Z1bGxlciIsImEiOiJjbDBzY2ZtdW8wMDRrM2xuM3dwbXozdzNjIn0.hSoWZ6hIKLCOSpLfO0lrPw');
 const tomtom_key = '9OEKF3EUekl4qDOM8AVGCmoTPtlo57KL';
@@ -28,18 +29,52 @@ const SearchScreen = ({navigation}) => {
   let lat;
   let lon;
 
+  // let currentLat;
+  // let currentLon;
+
+  // GetLocation.getCurrentPosition({
+  //   enableHighAccuracy: true,
+  //   timeout: 15000,
+  // })
+  // .then(location => {
+  //   console.log(location);
+  //   currentLat = location.latitude;
+  //   currentLon = location.longitude;
+  // })
+  // .catch(error => {
+  //   const { code, message } = error;
+  //   console.warn(code, message);
+  // })
+
   const [latitude, onChangeLatitude] = React.useState(37.9485);
   const [longitude, onChangeLongitude] = React.useState(-91.7715);
 
   const coords = React.useRef();
   const updateCoords = React.useCallback(() => {
-    // coords.current.flyTo([longitude, latitude], 10000);
-    // coords.current.zoomTo(8, 100);
     coords.current.setCamera({
       centerCoordinate: [lon, lat],
       zoomLevel: 10,
       animationDuration: 3000, 
     });
+    setTimeout(() => {
+      Alert.alert(
+        "For real...?",
+        "Are you sure you'd like to travel to this destination?",
+        [
+          {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel"
+          },
+          { text: "Confirm", onPress: () => navigation.navigate('Navigation', {
+            // originLat: currentLat,
+            // originLon: currentLon,
+            destLat: lat,
+            destLon: lon
+          }) }
+        ]
+      );
+    }, 4000);
   });
   
   return (

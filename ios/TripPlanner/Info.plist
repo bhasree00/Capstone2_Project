@@ -11,6 +11,8 @@
 	<string>en</string>
 	<key>MGLMapboxAccessToken</key>
 	<string>pk.eyJ1Ijoibmlja2Z1bGxlciIsImEiOiJjbDBzY2ZtdW8wMDRrM2xuM3dwbXozdzNjIn0.hSoWZ6hIKLCOSpLfO0lrPw</string>
+	<key>MBXAccessToken</key>
+	<string>pk.eyJ1Ijoibmlja2Z1bGxlciIsImEiOiJjbDBzY2ZtdW8wMDRrM2xuM3dwbXozdzNjIn0.hSoWZ6hIKLCOSpLfO0lrPw</string>
 	<key>CFBundleDisplayName</key>
 	<string>TripPlanner</string>
 	<key>CFBundleExecutable</key>

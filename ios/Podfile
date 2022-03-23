@@ -6,6 +6,8 @@ platform :ios, '11.0'
 install! 'cocoapods', :disable_input_output_paths => true
 
 target 'TripPlanner' do
+  $ReactNativeMapboxGLIOSVersion = '~> 6.1'
+  
   config = use_native_modules!
 
   use_react_native!(
@@ -21,6 +23,7 @@ target 'TripPlanner' do
   
   pre_install do |installer|
     $RNMBNAV.pre_install(installer)
+    $RNMBGL.pre_install(installer)
     # any other pre install hooks here
   end
 
@@ -32,6 +35,7 @@ target 'TripPlanner' do
   
   post_install do |installer|
     $RNMBNAV.post_install(installer)
+    $RNMBGL.post_install(installer)
     react_native_post_install(installer)
     __apply_Xcode_12_5_M1_post_install_workaround(installer)
   end

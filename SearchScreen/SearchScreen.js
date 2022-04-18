@@ -4,6 +4,9 @@ import MapboxGL from '@react-native-mapbox-gl/maps';
 import AutoCompleteInput from "react-native-tomtom-autocomplete";
 import GetLocation from 'react-native-get-location'
 import PopMenu from './PopMenu';
+import { LogBox } from 'react-native';
+
+LogBox.ignoreLogs(['Possible...']); // Ignore log notification by message
 
 MapboxGL.setAccessToken('pk.eyJ1Ijoibmlja2Z1bGxlciIsImEiOiJjbDBzY2ZtdW8wMDRrM2xuM3dwbXozdzNjIn0.hSoWZ6hIKLCOSpLfO0lrPw');
 const tomtom_key = '9OEKF3EUekl4qDOM8AVGCmoTPtlo57KL';
@@ -36,6 +39,7 @@ const SearchScreen = ({navigation}) => {
   let lat;
   let lon;
   let index = 0;
+  let tempArr = [];
 
   // let currentLat;
   // let currentLon;
@@ -62,6 +66,7 @@ const SearchScreen = ({navigation}) => {
   const [distance, onChangeDistance] = React.useState(0);
   const [destTemp, onChangeDestTemp] = React.useState(0);
   const [weatherIcon, onChangeWeatherIcon] = React.useState("13d");
+  const [weatherArr, onChangeWeatherArr] = React.useState([])
 
   const [showMenu, onSetShowMenu] = React.useState(false);
 
@@ -97,21 +102,61 @@ const SearchScreen = ({navigation}) => {
       });
   }
 
+  // TODO -> fix the stupid unhandled promise rejection
+  // JSON parse error; unrecognized token '<'
   const getDist = (originLat, originLon, destLat, destLon) => {
+    // calcualte total route
     fetch(`https://api.tomtom.com/routing/1/calculateRoute/${originLat},${originLon}:${destLat},${destLon}/json?&computeBestOrder=true&key=${tomtom_key}`)
       .then(resp => resp.json()) // have to use another then because resp.json returns a Promise
-      .then(data => {
+      .then(total => {
+        // console.log(Math.trunc(data.routes[0].summary.travelTimeInSeconds/3600));
         index = 0;
-        while(index < data.routes[0].legs[0].points.length)
+        const totalLength = total.routes[0].legs[0].points.length;
+
+        // for every ~50 miles, find the weather
+        while(index < totalLength)
         {
-          console.log(data.routes[0].legs[0].points[index]);
+          // console.log(data.routes[0].legs[0].points[index]);
+          const tempLat = total.routes[0].legs[0].points[index].latitude;
+          const tempLon = total.routes[0].legs[0].points[index].longitude;
+
+          // calculate route (for the time) to the next ~50 mile marker
+          fetch(`https://api.tomtom.com/routing/1/calculateRoute/${originLat},${originLon}:${tempLat},${tempLon}/json?&computeBestOrder=true&key=${tomtom_key}`)
+            .then(resp => resp.json())
+            .then(segment => {
+              // get the time it takes to get ther in hours (used as an index to forecast)
+              const hour = Math.trunc(segment.routes[0].summary.travelTimeInSeconds/3600);
+
+              // find the weather at this next ~50 mile marker
+              fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${tempLat}&lon=${tempLon}&exclude=current,minutely,daily,alerts&units=imperial&appid=${weather_key}`)
+                .then(resp => resp.json())
+                .then(data => {
+                  // console.log(tempLat);
+                  // console.log(hour);
+                  // console.log(data.hourly[hour]);
+                  const locationWeather = {
+                    lat: tempLat,
+                    lon: tempLon,
+                    weather: data.hourly[hour]
+                  };
+                  tempArr.push(locationWeather);
+                  onChangeWeatherArr(tempArr);
+                  // console.log(weatherArr.length);
+                  // onChangeDestTemp(data.main.temp);
+                  // onChangeWeatherIcon(data.weather[0].icon);
+                });
+            });
+          // this adds ~50 miles to the index
           index += 800;
         }
         // get the distance from the response and display in miles
-        console.log(data.routes[0].legs[0].points.length);
-        console.log(data.routes[0].summary.lengthInMeters*0.000621371);
+        // console.log(data.routes[0].legs[0].points.length);
+        // console.log(data.routes[0].summary.lengthInMeters*0.000621371);
         // console.log(data.routes[0].summary.lengthInMeters);
-        onChangeDistance(data.routes[0].summary.lengthInMeters*0.000621371);
+        onChangeDistance(total.routes[0].summary.lengthInMeters*0.000621371);
+      })
+      .catch((error) => {
+        // Do nothing
       });
   }
   
@@ -176,6 +221,7 @@ const SearchScreen = ({navigation}) => {
         dist={distance}
         temp={destTemp}
         icon={weatherIcon}
+        weatherArr={weatherArr}
       /> : null}
     </View>
   );

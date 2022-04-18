@@ -1,12 +1,15 @@
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { LogBox } from 'react-native';
 
 import MainScreen from './MainScreen/MainScreen';
 import SearchScreen from './SearchScreen/SearchScreen';
 import NavigationScreen from './NavigationScreen/NavigationScreen';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import PlanTripScreen from './PlanTripScreen/PlanTripScreen';
+
+LogBox.ignoreLogs(['Possible...']); // Ignore log notification by message
 
 const Stack = createNativeStackNavigator();
 EStyleSheet.build();

@@ -82,6 +82,12 @@ const PopMenu = (props) => {
 
   const coords = React.useRef();
   const updateCoords = React.useCallback(() => {
+    console.log(props.weatherArr);
+    for(let i = 0; i < props.weatherArr.length; i++) {
+      // this is where we can do something with the weather data.
+      // for example: if one of the id's indicates rain, let them know....
+      console.log(props.weatherArr[i].weather.weather[0].id);
+    }
     Alert.alert(
       "For real...?",
       "Are you sure you'd like to travel to this destination?",

@@ -35,7 +35,7 @@ const SearchScreen = ({navigation}) => {
   const mapbox_token = 'pk.eyJ1Ijoibmlja2Z1bGxlciIsImEiOiJjbDBzY2ZtdW8wMDRrM2xuM3dwbXozdzNjIn0.hSoWZ6hIKLCOSpLfO0lrPw';
   let lat;
   let lon;
-
+  let index = 0;
 
   // let currentLat;
   // let currentLon;
@@ -91,17 +91,26 @@ const SearchScreen = ({navigation}) => {
     fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=imperial&appid=${weather_key}`)
       .then(resp => resp.json())
       .then(data => {
-        console.log(data);
+        // console.log(data);
         onChangeDestTemp(data.main.temp);
         onChangeWeatherIcon(data.weather[0].icon);
       });
   }
 
   const getDist = (originLat, originLon, destLat, destLon) => {
-    fetch(`https://api.tomtom.com/routing/1/calculateRoute/${originLat},${originLon}:${destLat},${destLon}/json?&key=${tomtom_key}`)
+    fetch(`https://api.tomtom.com/routing/1/calculateRoute/${originLat},${originLon}:${destLat},${destLon}/json?&computeBestOrder=true&key=${tomtom_key}`)
       .then(resp => resp.json()) // have to use another then because resp.json returns a Promise
       .then(data => {
+        index = 0;
+        while(index < data.routes[0].legs[0].points.length)
+        {
+          console.log(data.routes[0].legs[0].points[index]);
+          index += 800;
+        }
         // get the distance from the response and display in miles
+        console.log(data.routes[0].legs[0].points.length);
+        console.log(data.routes[0].summary.lengthInMeters*0.000621371);
+        // console.log(data.routes[0].summary.lengthInMeters);
         onChangeDistance(data.routes[0].summary.lengthInMeters*0.000621371);
       });
   }
@@ -119,7 +128,7 @@ const SearchScreen = ({navigation}) => {
           placeholder: "Where do you want to go?",
         }}
         onPress={(item) => {
-          console.log(item);
+          // console.log(item);
           onChangeDestName(item.address.freeformAddress);
           lat = item.position.lat;
           onChangeLatitude(item.position.lat);

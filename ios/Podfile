@@ -16,6 +16,8 @@ target 'TripPlanner' do
     :hermes_enabled => false
   )
 
+  pod 'react-native-date-picker', :path => '../node_modules/react-native-date-picker'
+
   target 'TripPlannerTests' do
     inherit! :complete
     # Pods for testing

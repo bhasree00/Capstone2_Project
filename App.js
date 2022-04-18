@@ -5,8 +5,11 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MainScreen from './MainScreen/MainScreen';
 import SearchScreen from './SearchScreen/SearchScreen';
 import NavigationScreen from './NavigationScreen/NavigationScreen';
+import EStyleSheet from 'react-native-extended-stylesheet';
+import PlanTripScreen from './PlanTripScreen/PlanTripScreen';
 
 const Stack = createNativeStackNavigator();
+EStyleSheet.build();
 
 export default function App() {
   return (
@@ -23,6 +26,7 @@ export default function App() {
         <Stack.Screen name="Main" component={MainScreen} />
         <Stack.Screen name="Search" component={SearchScreen} />
         <Stack.Screen name="Navigation" component={NavigationScreen} />
+        <Stack.Screen name="PlanTrip" component={PlanTripScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

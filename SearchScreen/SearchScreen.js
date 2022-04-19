@@ -205,12 +205,13 @@ const SearchScreen = ({navigation}) => {
 
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Pressable
+      {/* <Pressable
         onPress={() => navigation.navigate('Main')}
         style={styles.temp}
       >
         <Text>Main Screen</Text>
-      </Pressable>
+      </Pressable> */}
+      <View style={styles.temp}></View>
       <AutoCompleteInput
         inputProps={{
           placeholder: "Where do you want to go?",

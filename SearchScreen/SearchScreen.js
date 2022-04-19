@@ -9,8 +9,33 @@ import { LogBox } from 'react-native';
 LogBox.ignoreLogs(['Possible...']); // Ignore log notification by message
 
 MapboxGL.setAccessToken('pk.eyJ1Ijoibmlja2Z1bGxlciIsImEiOiJjbDBzY2ZtdW8wMDRrM2xuM3dwbXozdzNjIn0.hSoWZ6hIKLCOSpLfO0lrPw');
-const tomtom_key = '9OEKF3EUekl4qDOM8AVGCmoTPtlo57KL';
 const weather_key = '12c996b575d9fdecc82ac92b59ebd3aa';
+
+// there is a max of 5 requests per second per key so to get around that, I have ten
+// keys that are cycled
+const tomtom_key1 = '9OEKF3EUekl4qDOM8AVGCmoTPtlo57KL';
+const tomtom_key2 = 'ky9TBTZk20BliDqyHlAfKTCxBMCt0Lbl';
+const tomtom_key3 = 'jQGF4OYhMbnQd9gRfb2RNlNYsROkKM3D';
+const tomtom_key4 = 'qmwAbUj1JosnSAGZUEL1x6YH4xyiq0wq';
+const tomtom_key5 = 'SvfsAu9el7zEw1LccBA0a20hTAGPHv0A';
+const tomtom_key6 = 'G6qbP5T58DVy27maIeP1ZeNqhi4PYjTn';
+const tomtom_key7 = 'm6Ze4jgMbTvaFILWUTgMpGIreiBQJdk6';
+const tomtom_key8 = '7X5Givn1tjt56RUnuksiUsJ6moibPGvw';
+const tomtom_key9 = 'Or0pgtGzGjiwytKjc9quLgmkAFpAjhzB';
+const tomtom_key10 = '22JKckl6DfcZPC54LWlMTpRi5VAwUhSd';
+
+const tomtom_arr = [
+  tomtom_key1,
+  tomtom_key2,
+  tomtom_key3,
+  tomtom_key4,
+  tomtom_key5,
+  tomtom_key6,
+  tomtom_key7,
+  tomtom_key8,
+  tomtom_key9,
+  tomtom_key10
+];
 
 const styles = StyleSheet.create({
   page: {
@@ -40,6 +65,9 @@ const SearchScreen = ({navigation}) => {
   let lon;
   let index = 0;
   let tempArr = [];
+  let locName = "";
+  let tomtomCount = 0;
+  let tomtom_key = tomtom_key1;
 
   // let currentLat;
   // let currentLon;
@@ -81,14 +109,16 @@ const SearchScreen = ({navigation}) => {
     // Calculate Distance and show the menu
     getDist(currentLat, currentLon, lat, lon);
 
-    // show menu
-    onSetShowMenu(true);
+    // show menu after 2 seconds (give api requests time)
+    setTimeout(() => {
+      onSetShowMenu(true);
+    }, 2000);
 
     // Move camera
     coords.current.setCamera({
       centerCoordinate: [lon, lat],
       zoomLevel: 10,
-      animationDuration: 3000, 
+      animationDuration: 3000,
     });
   });
 
@@ -105,22 +135,33 @@ const SearchScreen = ({navigation}) => {
   // TODO -> fix the stupid unhandled promise rejection
   // JSON parse error; unrecognized token '<'
   const getDist = (originLat, originLon, destLat, destLon) => {
+    index = 0;
+    tempArr = [];
+    tomtomCount = 0;
+
     // calcualte total route
-    fetch(`https://api.tomtom.com/routing/1/calculateRoute/${originLat},${originLon}:${destLat},${destLon}/json?&computeBestOrder=true&key=${tomtom_key}`)
+    fetch(`https://api.tomtom.com/routing/1/calculateRoute/${originLat},${originLon}:${destLat},${destLon}/json?&computeBestOrder=true&key=${tomtom_key1}`)
       .then(resp => resp.json()) // have to use another then because resp.json returns a Promise
       .then(total => {
         // console.log(Math.trunc(data.routes[0].summary.travelTimeInSeconds/3600));
-        index = 0;
         const totalLength = total.routes[0].legs[0].points.length;
+        // console.log(totalLength);
 
         // for every ~50 miles, find the weather
         while(index < totalLength)
         {
+          tomtomCount++;
+          if(tomtomCount >= tomtom_arr.length) {
+            tomtomCount = 0;
+          }
+          tomtom_key = tomtom_arr[tomtomCount];
           // console.log(data.routes[0].legs[0].points[index]);
           const tempLat = total.routes[0].legs[0].points[index].latitude;
           const tempLon = total.routes[0].legs[0].points[index].longitude;
 
           // calculate route (for the time) to the next ~50 mile marker
+          // console.log(tempLat);
+          // console.log(tempLon);
           fetch(`https://api.tomtom.com/routing/1/calculateRoute/${originLat},${originLon}:${tempLat},${tempLon}/json?&computeBestOrder=true&key=${tomtom_key}`)
             .then(resp => resp.json())
             .then(segment => {
@@ -140,26 +181,28 @@ const SearchScreen = ({navigation}) => {
                     weather: data.hourly[hour]
                   };
                   tempArr.push(locationWeather);
-                  onChangeWeatherArr(tempArr);
                   // console.log(weatherArr.length);
                   // onChangeDestTemp(data.main.temp);
                   // onChangeWeatherIcon(data.weather[0].icon);
                 });
+            })
+            .catch((error) => {
+              // DO NOTHING
+              console.log(error);
             });
           // this adds ~50 miles to the index
           index += 800;
+          // console.log(index);
         }
+        onChangeWeatherArr(tempArr);
         // get the distance from the response and display in miles
         // console.log(data.routes[0].legs[0].points.length);
         // console.log(data.routes[0].summary.lengthInMeters*0.000621371);
         // console.log(data.routes[0].summary.lengthInMeters);
         onChangeDistance(total.routes[0].summary.lengthInMeters*0.000621371);
-      })
-      .catch((error) => {
-        // Do nothing
       });
   }
-  
+
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Pressable
@@ -205,7 +248,7 @@ const SearchScreen = ({navigation}) => {
         tomtomOptions={{ key: tomtom_key }}
       />
       <View style={styles.container}>
-        <MapboxGL.MapView 
+        <MapboxGL.MapView
           style={styles.map}
         >
           <MapboxGL.Camera
@@ -213,7 +256,7 @@ const SearchScreen = ({navigation}) => {
           />
         </MapboxGL.MapView>
       </View>
-      {showMenu ? <PopMenu 
+      {showMenu ? <PopMenu
         style={styles.popMenu}
         lat={latitude}
         lon={longitude}

@@ -111,7 +111,7 @@ const SearchScreen = ({navigation}) => {
   const [distance, onChangeDistance] = React.useState(0);
   const [destTemp, onChangeDestTemp] = React.useState(0);
   const [weatherIcon, onChangeWeatherIcon] = React.useState("13d");
-  const [weatherArr, onChangeWeatherArr] = React.useState([])
+  const [weatherArr, onChangeWeatherArr] = React.useState([]);
 
   const [showMenu, onSetShowMenu] = React.useState(false);
 
@@ -149,8 +149,6 @@ const SearchScreen = ({navigation}) => {
       });
   }
 
-  // TODO -> fix the stupid unhandled promise rejection
-  // JSON parse error; unrecognized token '<'
   const getDist = (originLat, originLon, destLat, destLon) => {
     index = 0;
     tempArr = [];

@@ -348,6 +348,8 @@ const PopMenu = (props) => {
             icon={`https://openweathermap.org/img/wn/${props.icon}.png`}
             temp={props.temp}
             dist={props.dist}
+            lat={props.lat}
+            lon={props.lon}
           />
         </View>
       </Modal>

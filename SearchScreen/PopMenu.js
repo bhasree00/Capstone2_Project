@@ -3,6 +3,8 @@ import { View, Text, Pressable, StyleSheet, Alert, Image, TurboModuleRegistry } 
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import GetLocation from 'react-native-get-location'
 import { useNavigation } from '@react-navigation/native';
+import Modal from "react-native-modal";
+import PlanTripScreen from '../PlanTripScreen/PlanTripScreen';
 
 MapboxGL.setAccessToken('pk.eyJ1Ijoibmlja2Z1bGxlciIsImEiOiJjbDBzY2ZtdW8wMDRrM2xuM3dwbXozdzNjIn0.hSoWZ6hIKLCOSpLfO0lrPw');
 
@@ -75,6 +77,10 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 24,
     fontWeight: '700'
+  },
+  xIcon: {
+    width: 25,
+    height: 25
   }
 });
 
@@ -115,6 +121,7 @@ const PopMenu = (props) => {
 
   const [latitude, onChangeLatitude] = React.useState(37.9485);
   const [longitude, onChangeLongitude] = React.useState(-91.7715);
+  const [showModal, onChangeShowModal] = React.useState(false);
 
   // const coords = React.useRef();
   const updateCoords = React.useCallback(() => {
@@ -297,8 +304,24 @@ const PopMenu = (props) => {
         >
           <Text style={styles.buttonText}>Directions</Text>
         </Pressable>
+        {/* <Pressable
+          onPress={() => navigation.navigate('PlanTrip', {
+            name: props.name,
+            icon: `https://openweathermap.org/img/wn/${props.icon}.png`,
+            temp: props.temp,
+            dist: props.dist
+          })}
+          style={({pressed}) => [
+            {
+              backgroundColor: pressed ? 'red': 'blue'
+            },
+            styles.button
+          ]}
+        >
+          <Text style={styles.buttonText}>Plan Trip</Text>
+        </Pressable> */}
         <Pressable
-          onPress={() => navigation.navigate('PlanTrip')}
+          onPress={() => onChangeShowModal(true)}
           style={({pressed}) => [
             {
               backgroundColor: pressed ? 'red': 'blue'
@@ -309,6 +332,25 @@ const PopMenu = (props) => {
           <Text style={styles.buttonText}>Plan Trip</Text>
         </Pressable>
       </View>
+      <Modal isVisible={showModal}>
+        <View style={{ backgroundColor: 'white', borderRadius: 20, height: '75%'}}>
+          <Pressable
+            onPress={() => onChangeShowModal(false)}
+            style={{ marginLeft: 'auto', marginRight: '5%', marginTop: '5%' }}
+          >
+            <Image
+              style={styles.xIcon}
+              source={require('../images/x-icon.png')}
+            />
+          </Pressable>
+          <PlanTripScreen
+            name={props.name}
+            icon={`https://openweathermap.org/img/wn/${props.icon}.png`}
+            temp={props.temp}
+            dist={props.dist}
+          />
+        </View>
+      </Modal>
     </View>
   );
 }

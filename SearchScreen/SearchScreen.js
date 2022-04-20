@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Text, Pressable, StyleSheet, Alert } from 'react-native';
+import { View, Text, Pressable, StyleSheet, Alert, Image } from 'react-native';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import AutoCompleteInput from "react-native-tomtom-autocomplete";
 import GetLocation from 'react-native-get-location'
@@ -56,6 +56,23 @@ const styles = StyleSheet.create({
   },
   temp: {
     height: '5%'
+  },
+  backArrow: {
+    width: 30,
+    height: 30
+  },
+  arrowContainer: {
+    marginRight: 'auto',
+  },
+  header: {
+    width: '100%',
+    marginTop: '10%',
+    flexDirection: 'row'
+  },
+  headerText: {
+    fontSize: 24,
+    fontWeight: '700',
+    marginRight: '33%'
   }
 });
 
@@ -160,12 +177,10 @@ const SearchScreen = ({navigation}) => {
           const tempLon = total.routes[0].legs[0].points[index].longitude;
 
           // calculate route (for the time) to the next ~50 mile marker
-          // console.log(tempLat);
-          // console.log(tempLon);
           fetch(`https://api.tomtom.com/routing/1/calculateRoute/${originLat},${originLon}:${tempLat},${tempLon}/json?&computeBestOrder=true&key=${tomtom_key}`)
             .then(resp => resp.json())
             .then(segment => {
-              // get the time it takes to get ther in hours (used as an index to forecast)
+              // get the time it takes to get there in hours (used as an index to forecast)
               const hour = Math.trunc(segment.routes[0].summary.travelTimeInSeconds/3600);
 
               // find the weather at this next ~50 mile marker
@@ -211,7 +226,15 @@ const SearchScreen = ({navigation}) => {
       >
         <Text>Main Screen</Text>
       </Pressable> */}
-      <View style={styles.temp}></View>
+      <View style={styles.header}>
+        <Pressable style={styles.arrowContainer} onPress={() => navigation.goBack()}>
+          <Image
+            style={styles.backArrow}
+            source={require('../images/back-arrow.png')}
+          />
+        </Pressable>
+        <Text style={styles.headerText}>Trip Planner</Text>
+      </View>
       <AutoCompleteInput
         inputProps={{
           placeholder: "Where do you want to go?",
@@ -240,10 +263,10 @@ const SearchScreen = ({navigation}) => {
           width: '85%'
         }}
         listItemsContainerStyle={{
-          // padding: 10,
+          padding: 10,
           marginHorizontal: 10,
           borderWidth: 1,
-          borderColor: "grey",
+          borderColor: "grey"
         }}
         bottomDivider
         tomtomOptions={{ key: tomtom_key }}
